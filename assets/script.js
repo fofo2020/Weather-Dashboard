@@ -1,83 +1,99 @@
-// TODO: Style current HTML
-
 const apiKey = "a2df73ceb613685629af070d8e2016bc";
-const history = JSON.parse(localStorage.getItem('history')) || [];
+let history;
+const historyDiv = $("#history")
 // TODO: Populate history list from local storage when page loads
 
-$('#search-form').on('submit', function(event) {
-    event.preventDefault();
+// making sure we have an array in LS every time we load a new instance of the app
+const init = function () {
+  history = JSON.parse(localStorage.getItem("history"));
 
-    const userInput = $('#search-input').val();
-    const queryUrl = 'http://api.openweathermap.org/geo/1.0/direct?q=' + userInput + '&limit=5&appid=' + apiKey;
-    // TODO: put the search value on the history list container
+  if (!history) {
+    localStorage.setItem("history", JSON.stringify([]));
+  }
+};
+init();
 
-    // Add the history to local storage
-    history.push(userInput);
-    localStorage.setItem('history', JSON.stringify(history));
+const renderHistory = function(){
+    historyDiv.empty()
+    const lsHistory = JSON.parse(localStorage.getItem("history"));
+    for (let index = 0; index < lsHistory.length; index++) {
+        const historyElem = $("<div>"+lsHistory[index]+"</div>")
+        historyDiv.append(historyElem)
+        
+    }
+}
+renderHistory();
 
-    // Call Geocoding API when search form is submitted to find city lat and long value
-    $.ajax({ url: queryUrl })
-        .then(function(response) {
-            const lat = response[0].lat;
-            const lon = response[0].lon;
-
-            const weatherQueryUrl = 'http://api.openweathermap.org/data/2.5/forecast?units=metric&lat=' + lat + '&lon=' + lon + '&appid=' + apiKey;
-
-            // Call 5 day weather forecast API after we have city lat and lon value
-            $.ajax({ url: weatherQueryUrl })
-                .then(function(weatherResponse) {
-                    // Put the response on the HTML page
-                    const weatherList = weatherResponse.list;
-
-                    const weathers = [];
-                    for (let i = 0; i < weatherList.length; i += 8) {
-                        weathers.push(weatherList[i]);
-                        
-                    }
-
-                    // console.log(weathers);
-                    console.log(weatherResponse);
-                    // weathers[0] will be today's weather
-
-                    // weathers[1 - 4] will be 5 days forecast
-                    // 
-                    // Temp    (list.main.temp )
-                    // Humidity  list.main.humudity
-                    // Wind     list.wind.speed
-                    var todayTemp = weatherResponse.list[0].main.temp;
-                    console.log(todayTemp)
-                    var todayHumidity = weatherResponse.list[0].main.humidity;
-                    console.log(todayHumidity)
-                    var todayWind = weatherResponse.list[0].wind.speed;
-                    console.log(todayWind)
-                    var cityName = weatherResponse.city.name;
-                    console.log(cityName)
-
-                    //  put today's weather in container for today's weather
-                   
-                   $("#cityName").text(cityName + " " + moment().format("(DD-MM-YYYY)"));
-                   $('#Temp').text(todayTemp + "C")
-                   $('#Wind').text(todayWind + 'KPH')
-                   $('#Humidity').text(todayHumidity + '%')
-                   var forecast = $('#forecast');
-                    // TODO: put 5 day's forecast weather in container for the 5 day forecast
-                 for (i = 0 ; weathers.length > i ; i++){
-                    console.log(weathers[i])
-                    var olEl = $('<ol>') ;
-                    olEl.text('hello')
-                    forecast.append(olEl);
-                //     var tempEl = weatherResponse.list[i].main.temp;
-                //    $("<li>)").append(tempEl);
-                //    windEl.text(todayWind + 'KPH')
-                //    humidityEl.text(todayHumidity + '%')
-                  
-
-                 }
+$("#search-form").on("submit", function (event) {
+  event.preventDefault();
+renderHistory()
 
 
+  const userInput = $("#search-input").val();
+  const queryUrl =
+    "http://api.openweathermap.org/geo/1.0/direct?q=" +
+    userInput +
+    "&limit=5&appid=" +
+    apiKey;
 
+  // Add the history to local storage
+  if (userInput === "") return; //  gate statement to avoid saving empty strings in ls
 
-                    // Icon URL http://openweathermap.org/img/w/" + iconcode + ".png"
-                });
-        });
+  history.push(userInput);
+  if (history.length >= 10) {
+    // mutate the array and get everything from first index to the end
+    history = history.slice(1);
+
+    localStorage.setItem("history", JSON.stringify(history));
+  }
+
+  // Call Geocoding API when search form is submitted to find city lat and long value
+  $.ajax({ url: queryUrl }).then(function (response) {
+    const lat = response[0].lat;
+    const lon = response[0].lon;
+
+    const weatherQueryUrl =
+      "http://api.openweathermap.org/data/2.5/forecast?units=metric&lat=" +
+      lat +
+      "&lon=" +
+      lon +
+      "&appid=" +
+      apiKey;
+
+    // Call 5 day weather forecast API after we have city lat and lon value
+    $.ajax({ url: weatherQueryUrl }).then(function (weatherResponse) {
+      // Put the response on the HTML page
+      const weatherList = weatherResponse.list;
+      var todayTemp = weatherResponse.list[0].main.temp;
+      console.log(todayTemp);
+      var todayHumidity = weatherResponse.list[0].main.humidity;
+      console.log(todayHumidity);
+      var todayWind = weatherResponse.list[0].wind.speed;
+      console.log(todayWind);
+      var cityName = weatherResponse.city.name;
+      console.log(cityName);
+
+      //  put today's weather in container for today's weather
+      $("#cityName").text(cityName + " " + moment().format("(DD-MM-YYYY)"));
+      $("#Temp").text(todayTemp + "C");
+      $("#Wind").text(todayWind + "KPH");
+      $("#Humidity").text(todayHumidity + "%");
+      var forecast = $("#forecast");
+      forecast.empty();
+
+      // put 5 day's forecast weather in container for the 5 day forecast
+      for (i = 8; weatherList.length > i; i += 7) {
+        console.log(weatherList[i]);
+        var olEl = $("<ol>");
+        olEl.text("hello");
+        var iconURL = `http://openweathermap.org/img/w/${weatherList[i].weather[0].icon}.png`;
+        var weatherIcon = $(`<li><img src="${iconURL}" /></li>`);
+        olEl.append(weatherIcon);
+        forecast.append(olEl);
+      }
+
+      // Icon URL http://openweathermap.org/img/w/" + iconcode + ".png" --> concatenation (adding of strings)
+      // Icon URL `htt://openweathermap.org/img/w/${iconcode}.png` --> template literal (template string) --> alternative to what's above
+    });
+  });
 });
