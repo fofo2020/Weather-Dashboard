@@ -1,0 +1,11 @@
+ul {
+    list-style-type: none;
+  }
+
+
+ul{
+    background-color:midnightblue;
+    padding: 20px;
+    margin-inline-end: auto;
+    color: azure;
+}

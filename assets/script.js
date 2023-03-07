@@ -1,9 +1,10 @@
 const apiKey = "a2df73ceb613685629af070d8e2016bc";
 let history;
-const historyDiv = $("#history")
-// TODO: Populate history list from local storage when page loads
+const historyDiv = $("#history");
 
-// making sure we have an array in LS every time we load a new instance of the app
+// // TODO: Populate history list from local storage when page loads
+
+// // making sure we have an array in LS every time we load a new instance of the app
 const init = function () {
   history = JSON.parse(localStorage.getItem("history"));
 
@@ -13,21 +14,19 @@ const init = function () {
 };
 init();
 
-const renderHistory = function(){
-    historyDiv.empty()
-    const lsHistory = JSON.parse(localStorage.getItem("history"));
-    for (let index = 0; index < lsHistory.length; index++) {
-        const historyElem = $("<div>"+lsHistory[index]+"</div>")
-        historyDiv.append(historyElem)
-        
-    }
-}
+const renderHistory = function () {
+  historyDiv.empty();
+  const lsHistory = JSON.parse(localStorage.getItem("history"));
+  for (let index = 0; index < lsHistory.length; index++) {
+    const historyElem = $("<a href=#>" + lsHistory[index] + "</a>");
+    historyDiv.append(historyElem);
+  }
+};
 renderHistory();
 
 $("#search-form").on("submit", function (event) {
   event.preventDefault();
-renderHistory()
-
+  renderHistory();
 
   const userInput = $("#search-input").val();
   const queryUrl =
@@ -39,13 +38,13 @@ renderHistory()
   // Add the history to local storage
   if (userInput === "") return; //  gate statement to avoid saving empty strings in ls
 
-  history.push(userInput);
+  console.log(history);
   if (history.length >= 10) {
     // mutate the array and get everything from first index to the end
     history = history.slice(1);
-
-    localStorage.setItem("history", JSON.stringify(history));
   }
+  history.push(userInput);
+  localStorage.setItem("history", JSON.stringify(history));
 
   // Call Geocoding API when search form is submitted to find city lat and long value
   $.ajax({ url: queryUrl }).then(function (response) {
@@ -72,28 +71,49 @@ renderHistory()
       console.log(todayWind);
       var cityName = weatherResponse.city.name;
       console.log(cityName);
+      var todayIconURL = `http://openweathermap.org/img/w/${weatherList[0].weather[0].icon}.png`;
+      var todayWeatherIcon = `<img src="${todayIconURL}" />`;
+
+      var todayIcon = $("#today-weather-icon");
+      todayIcon.empty();
 
       //  put today's weather in container for today's weather
       $("#cityName").text(cityName + " " + moment().format("(DD-MM-YYYY)"));
-      $("#Temp").text(todayTemp + "C");
-      $("#Wind").text(todayWind + "KPH");
-      $("#Humidity").text(todayHumidity + "%");
+
+      $(todayWeatherIcon).appendTo($("#today-weather-icon"));
+      $("#Temp").text("Temp: " + todayTemp + "°C");
+      $("#Wind").text("Wind: " + todayWind + " KPH");
+      $("#Humidity").text("Humidity: " + todayHumidity + "%");
+
       var forecast = $("#forecast");
       forecast.empty();
 
       // put 5 day's forecast weather in container for the 5 day forecast
       for (i = 8; weatherList.length > i; i += 7) {
         console.log(weatherList[i]);
-        var olEl = $("<ol>");
-        olEl.text("hello");
-        var iconURL = `http://openweathermap.org/img/w/${weatherList[i].weather[0].icon}.png`;
-        var weatherIcon = $(`<li><img src="${iconURL}" /></li>`);
-        olEl.append(weatherIcon);
-        forecast.append(olEl);
-      }
+        var tempForecast = weatherList[i].main.temp;
+        console.log(tempForecast);
+        var humidityForecast = weatherList[i].main.humidity;
+        console.log(humidityForecast);
+        var windForecast = weatherList[i].wind.speed;
+        console.log(windForecast);
+        var dayForecast = moment(weatherList[i].dt_txt).format("DD-MM-YYYY");
+        var ulEl = $("<ul>");
 
-      // Icon URL http://openweathermap.org/img/w/" + iconcode + ".png" --> concatenation (adding of strings)
-      // Icon URL `htt://openweathermap.org/img/w/${iconcode}.png` --> template literal (template string) --> alternative to what's above
+        var iconURL = `http://openweathermap.org/img/w/${weatherList[i].weather[0].icon}.png`;
+        var weatherIcon = $(`
+        <li>${dayForecast}</li>
+        <li><img src="${iconURL}"/></li>
+        <li>Temp: ${tempForecast} &#8451</li>
+        <li>Wind:  ${windForecast}KPH</li>
+        <li>Humidity: ${humidityForecast}%</li>`);
+        ulEl.append(weatherIcon);
+        forecast.append(ulEl);
+
+       
+      }
     });
   });
 });
+// Icon URL http://openweathermap.org/img/w/" + iconcode + ".png" --> concatenation (adding of strings)
+// Icon URL `htt://openweathermap.org/img/w/${iconcode}.png` --> template literal (template string) --> alternative to what's above
