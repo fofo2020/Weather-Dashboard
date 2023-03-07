@@ -4,8 +4,32 @@ ul {
 
 
 ul{
-    background-color:midnightblue;
+    background-color:rgb(81, 81, 137);
     padding: 20px;
     margin-inline-end: auto;
     color: azure;
 }
+
+#citySearch{
+    border-style: inset;
+    background-color: rgb(253, 253, 253);
+    margin-top:2%;
+    padding-top: 2%;
+    text-align: justify;
+}
+
+#search-button {
+    /* float: left; */
+    width: auto;
+    /* padding: 10px; */
+    background: #2196F3;
+    color: white;
+    font-size: 17px;
+    border: 1px solid grey;
+    border-left: none; /* Prevent double borders */
+    cursor: pointer;
+  }
+
+  #search-button button:hover {
+    background: #6f7981;
+  }

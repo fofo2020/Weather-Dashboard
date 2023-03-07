@@ -18,7 +18,7 @@ const renderHistory = function () {
   historyDiv.empty();
   const lsHistory = JSON.parse(localStorage.getItem("history"));
   for (let index = 0; index < lsHistory.length; index++) {
-    const historyElem = $("<a href=#>" + lsHistory[index] + "</a>");
+    const historyElem = $("<a id=citySearch href=#>" + lsHistory[index] + "</a>");
     historyDiv.append(historyElem);
   }
 };
