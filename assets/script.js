@@ -2,9 +2,9 @@ const apiKey = "a2df73ceb613685629af070d8e2016bc";
 let history;
 const historyDiv = $("#history");
 
-// // TODO: Populate history list from local storage when page loads
+// Populate history list from local storage when page loads
 
-// // making sure we have an array in LS every time we load a new instance of the app
+//making sure we have an array in LS every time we load a new instance of the app
 const init = function () {
   history = JSON.parse(localStorage.getItem("history"));
 
@@ -19,14 +19,19 @@ const renderHistory = function () {
   const lsHistory = JSON.parse(localStorage.getItem("history"));
   for (let index = 0; index < lsHistory.length; index++) {
     const historyElem = $("<a id=citySearch href=#>" + lsHistory[index] + "</a>");
+    historyElem.on("click", function() {
+      $("#search-input").val(lsHistory[index]);
+      $("#search-form").submit();
+    });
     historyDiv.append(historyElem);
   }
 };
+
 renderHistory();
 
 $("#search-form").on("submit", function (event) {
   event.preventDefault();
-  renderHistory();
+ 
 
   const userInput = $("#search-input").val();
   const queryUrl =
@@ -110,10 +115,9 @@ $("#search-form").on("submit", function (event) {
         ulEl.append(weatherIcon);
         forecast.append(ulEl);
 
+         renderHistory();
        
       }
     });
   });
 });
-// Icon URL http://openweathermap.org/img/w/" + iconcode + ".png" --> concatenation (adding of strings)
-// Icon URL `htt://openweathermap.org/img/w/${iconcode}.png` --> template literal (template string) --> alternative to what's above
