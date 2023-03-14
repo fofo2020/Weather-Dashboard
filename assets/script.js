@@ -13,6 +13,7 @@ const init = function () {
   }
 };
 init();
+
 // history search stored to localStorage and on click event listener
 const renderHistory = function () {
   historyDiv.empty();
