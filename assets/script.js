@@ -2,7 +2,7 @@ const apiKey = "a2df73ceb613685629af070d8e2016bc";
 let history;
 const historyDiv = $("#history");
 
-// Populate history list from local storage when page loads
+// Populates history list from local storage when page loads
 
 //making sure we have an array in LS every time we load a new instance of the app
 const init = function () {
@@ -13,7 +13,7 @@ const init = function () {
   }
 };
 init();
-
+// history search stored to localStorage and on click event listener
 const renderHistory = function () {
   historyDiv.empty();
   const lsHistory = JSON.parse(localStorage.getItem("history"));
@@ -28,6 +28,8 @@ const renderHistory = function () {
 };
 
 renderHistory();
+
+// event listener on search input and API request
 
 $("#search-form").on("submit", function (event) {
   event.preventDefault();
@@ -66,7 +68,7 @@ $("#search-form").on("submit", function (event) {
 
     // Call 5 day weather forecast API after we have city lat and lon value
     $.ajax({ url: weatherQueryUrl }).then(function (weatherResponse) {
-      // Put the response on the HTML page
+      // Puts the response on the HTML page
       const weatherList = weatherResponse.list;
       var todayTemp = weatherResponse.list[0].main.temp;
       console.log(todayTemp);
@@ -82,7 +84,7 @@ $("#search-form").on("submit", function (event) {
       var todayIcon = $("#today-weather-icon");
       todayIcon.empty();
 
-      //  put today's weather in container for today's weather
+      //  puts today's weather in container for today's weather
       $("#cityName").text(cityName + " " + moment().format("(DD-MM-YYYY)"));
 
       $(todayWeatherIcon).appendTo($("#today-weather-icon"));
@@ -93,7 +95,7 @@ $("#search-form").on("submit", function (event) {
       var forecast = $("#forecast");
       forecast.empty();
 
-      // put 5 day's forecast weather in container for the 5 day forecast
+      // puts 5 day's forecast weather in container for the 5 day forecast
       for (i = 8; weatherList.length > i; i += 7) {
         console.log(weatherList[i]);
         var tempForecast = weatherList[i].main.temp;
@@ -117,6 +119,7 @@ $("#search-form").on("submit", function (event) {
 
          renderHistory();
        
+         
       }
     });
   });
