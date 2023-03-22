@@ -3,7 +3,7 @@ This app is a weather dashboard that allows users to search for the weather fore
 
 ![Weather Dashboard Example](./assets/WeatherDashboard.png "Weather Dashboard Example")
 
-![Link to the application]("https://fofo2020.github.io/Weather-Dashboard/")
+Link to the application: ("https://fofo2020.github.io/Weather-Dashboard/")
 
 
 ## Usage
