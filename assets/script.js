@@ -1,5 +1,5 @@
 const apiKey = "a2df73ceb613685629af070d8e2016bc";
-let history;
+let history=[];
 const historyDiv = $("#history");
 
 // Populates history list from local storage when page loads
