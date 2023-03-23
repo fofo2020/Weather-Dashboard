@@ -38,7 +38,7 @@ $("#search-form").on("submit", function (event) {
 
   const userInput = $("#search-input").val();
   const queryUrl =
-    "http://api.openweathermap.org/geo/1.0/direct?q=" +
+    "https://api.openweathermap.org/geo/1.0/direct?q=" +
     userInput +
     "&limit=5&appid=" +
     apiKey;
@@ -60,7 +60,7 @@ $("#search-form").on("submit", function (event) {
     const lon = response[0].lon;
 
     const weatherQueryUrl =
-      "http://api.openweathermap.org/data/2.5/forecast?units=metric&lat=" +
+      "https://api.openweathermap.org/data/2.5/forecast?units=metric&lat=" +
       lat +
       "&lon=" +
       lon +
@@ -79,7 +79,7 @@ $("#search-form").on("submit", function (event) {
       console.log(todayWind);
       var cityName = weatherResponse.city.name;
       console.log(cityName);
-      var todayIconURL = `http://openweathermap.org/img/w/${weatherList[0].weather[0].icon}.png`;
+      var todayIconURL = `https://openweathermap.org/img/w/${weatherList[0].weather[0].icon}.png`;
       var todayWeatherIcon = `<img src="${todayIconURL}" />`;
 
       var todayIcon = $("#today-weather-icon");
@@ -108,7 +108,7 @@ $("#search-form").on("submit", function (event) {
         var dayForecast = moment(weatherList[i].dt_txt).format("DD-MM-YYYY");
         var ulEl = $("<ul>");
 
-        var iconURL = `http://openweathermap.org/img/w/${weatherList[i].weather[0].icon}.png`;
+        var iconURL = `https://openweathermap.org/img/w/${weatherList[i].weather[0].icon}.png`;
         var weatherIcon = $(`
         <li>${dayForecast}</li>
         <li><img src="${iconURL}"/></li>
